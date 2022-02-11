@@ -1,0 +1,17 @@
+{
+  "name": "wordlewiz",
+  "version": "0.0.0",
+  "description": "Wordle copilot",
+  "scripts": {
+    "build": "esbuild src/main.ts src/sw.ts src/popup/popup.ts src/popup/popup.css --bundle --outdir=dist && cp src/popup/popup.html dist/popup",
+    "dev": "nodemon -e js,ts,css --exec npm run build --ignore dist"
+  },
+  "author": "david",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.178",
+    "esbuild": "^0.14.21",
+    "nodemon": "^2.0.15",
+    "typescript": "^4.5.5"
+  }
+}

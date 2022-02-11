@@ -1,0 +1,7 @@
+{
+  "editor.insertSpaces": true,
+  "editor.bracketPairColorization.enabled": true,
+  "search.exclude": {
+    "dist/**": true
+  }
+}
