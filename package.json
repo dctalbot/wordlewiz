@@ -4,7 +4,7 @@
   "description": "Wordle copilot",
   "scripts": {
     "build": "esbuild src/main.ts src/sw.ts src/popup/popup.ts --bundle --outdir=dist && cp src/popup/popup.html dist/popup",
-    "dev": "nodemon -e js,ts,css --exec npm run build --ignore dist"
+    "dev": "nodemon --watch src -e '*' --exec npm run build --ignore dist"
   },
   "author": "david",
   "license": "MIT",
