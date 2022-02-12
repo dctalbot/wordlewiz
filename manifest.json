@@ -1,6 +1,6 @@
 {
-  "name": "Getting Started Example",
-  "description": "Build an Extension!",
+  "name": "Wordle Wiz",
+  "description": "Your wordle copilot",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
@@ -9,6 +9,7 @@
   },
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
+    "default_title": "Wordle Wiz",
     "default_popup": "dist/popup/popup.html"
   },
   "content_scripts": [
