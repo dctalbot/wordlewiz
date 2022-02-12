@@ -11,6 +11,7 @@
     ol?.replaceWith(next);
   }
   var ch = new BroadcastChannel("optionsCh");
+  ch.postMessage({ type: "awake" });
   ch.onmessage = (msg) => {
     setOptions(msg?.data?.options ?? []);
   };

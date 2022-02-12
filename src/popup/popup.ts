@@ -13,6 +13,8 @@ function setOptions(options: string[]) {
 
 const ch = new BroadcastChannel("optionsCh");
 
+ch.postMessage({ type: "awake" });
+
 ch.onmessage = (msg) => {
   setOptions(msg?.data?.options ?? []);
 };
