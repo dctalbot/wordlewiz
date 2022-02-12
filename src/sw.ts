@@ -9,11 +9,12 @@ import words from "./words.json";
 
 // character means correct, set means exclude
 const init: (string | Set<string>)[] = new Array(5).fill(new Set());
+type LetterMap = typeof init;
 
 setInterval(() => {
   chrome.storage.local
     .get("wordleState")
-    .then((val) => console.log(update(init, val.wordleState)));
+    .then((val) => console.log(filter(words, update(init, val.wordleState))));
 }, 5000);
 
 chrome.storage.onChanged.addListener((store) => {
@@ -25,7 +26,7 @@ chrome.storage.onChanged.addListener((store) => {
   console.log(letters);
 });
 
-export function update(letters: typeof init, w: WorldleState) {
+function update(letters: LetterMap, w: WorldleState) {
   if (w.rowIndex === 0) return letters;
 
   letters.forEach((val, i) => {
@@ -52,4 +53,26 @@ export function update(letters: typeof init, w: WorldleState) {
   });
 
   return letters;
+}
+
+function filter(words: string[], letters: LetterMap) {
+  const restring = letters.reduce<string>((res, l) => {
+    if (typeof l === "string") {
+      return res + l;
+    }
+    if (l.size === 0) {
+      return res + "\\w";
+    }
+    const iter = l.values();
+    let x = "[^"; // exclude
+    while (!x.endsWith("]")) {
+      const val = iter.next().value;
+      x += val ? val : "]";
+    }
+    return res + x;
+  }, "");
+
+  const rx = new RegExp(restring);
+
+  return words.filter((w) => rx.test(w));
 }
