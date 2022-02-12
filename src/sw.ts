@@ -1,32 +1,19 @@
 import words from "./words.json";
 
-// setInterval(() => {
-//   const a = Math.floor(Math.random() * 100);
-//   const options = words.slice(a, a + 5);
-//   chrome.storage.local.set({ options });
-//   console.log(options);
-// }, 5000);
+const ch = new BroadcastChannel("optionsCh");
 
 // character means correct, set means exclude
 const init: (string | Set<string>)[] = new Array(5).fill(new Set());
 type LetterMap = typeof init;
 
-setInterval(() => {
-  chrome.storage.local
-    .get("wordleState")
-    .then((val) => console.log(filter(words, update(init, val.wordleState))));
-}, 5000);
-
 chrome.storage.onChanged.addListener((store) => {
   const wordleState: WorldleState = store.wordleState?.newValue;
-
-  // chrome.runtime.sendMessage({ options: words });
-
-  const letters = update(init, wordleState);
-  console.log(letters);
+  const options = filter(words, update(init, wordleState));
+  ch.postMessage({ options });
 });
 
 function update(letters: LetterMap, w: WorldleState) {
+  if (w === undefined) return letters;
   if (w.rowIndex === 0) return letters;
 
   letters.forEach((val, i) => {

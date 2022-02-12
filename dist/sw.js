@@ -2503,16 +2503,16 @@
   ];
 
   // src/sw.ts
+  var ch = new BroadcastChannel("optionsCh");
   var init = new Array(5).fill(/* @__PURE__ */ new Set());
-  setInterval(() => {
-    chrome.storage.local.get("wordleState").then((val) => console.log(filter(words_default, update(init, val.wordleState))));
-  }, 5e3);
   chrome.storage.onChanged.addListener((store) => {
     const wordleState = store.wordleState?.newValue;
-    const letters = update(init, wordleState);
-    console.log(letters);
+    const options = filter(words_default, update(init, wordleState));
+    ch.postMessage({ options });
   });
   function update(letters, w) {
+    if (w === void 0)
+      return letters;
     if (w.rowIndex === 0)
       return letters;
     letters.forEach((val, i) => {

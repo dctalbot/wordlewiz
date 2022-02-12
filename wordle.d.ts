@@ -8,4 +8,5 @@ interface WorldleState {
   restoringFromLocalStorage: null;
   rowIndex: 0 | 1 | 2 | 3 | 4;
   solution: string;
+  tick?: number;
 }

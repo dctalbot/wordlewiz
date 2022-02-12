@@ -1,11 +1,9 @@
 (() => {
   // src/main.ts
-  var cache = "";
+  chrome.storage.local.clear();
   setInterval(() => {
-    const candidate = localStorage.getItem("nyt-wordle-state") || "";
-    if (cache !== candidate) {
-      chrome.storage.local.set({ wordleState: JSON.parse(candidate) });
-      cache = candidate;
-    }
+    const wordleState = JSON.parse(localStorage.getItem("nyt-wordle-state") || "");
+    wordleState.tick = Date.now();
+    chrome.storage.local.set({ wordleState });
   }, 3e3);
 })();
