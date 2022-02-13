@@ -5,17 +5,17 @@
   "manifest_version": 3,
   "background": {
     "type": "module",
-    "service_worker": "dist/sw.js"
+    "service_worker": "sw.js"
   },
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_title": "Wordle Wiz",
-    "default_popup": "dist/popup/popup.html"
+    "default_popup": "popup/popup.html"
   },
   "content_scripts": [
     {
       "matches": ["https://*.nytimes.com/games/wordle/*"],
-      "js": ["dist/main.js"]
+      "js": ["main.js"]
     }
   ]
 }

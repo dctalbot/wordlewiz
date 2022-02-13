@@ -1,18 +1,1 @@
-(() => {
-  // src/popup/popup.ts
-  function setOptions(options) {
-    const ol = document.querySelector("ol");
-    var next = document.createElement("ol");
-    options.forEach((o) => {
-      const li = document.createElement("li");
-      li.appendChild(document.createTextNode(o));
-      next.appendChild(li);
-    });
-    ol?.replaceWith(next);
-  }
-  var ch = new BroadcastChannel("optionsCh");
-  ch.postMessage({ type: "awake" });
-  ch.onmessage = (msg) => {
-    setOptions(msg?.data?.options ?? []);
-  };
-})();
+(()=>{function s(e){let a=document.querySelector("ol");var t=document.createElement("ol");e.forEach(c=>{let n=document.createElement("li");n.appendChild(document.createTextNode(c)),t.appendChild(n)}),a?.replaceWith(t)}var o=new BroadcastChannel("optionsCh");o.postMessage({type:"awake"});o.onmessage=e=>{s(e?.data?.options??[])};})();
