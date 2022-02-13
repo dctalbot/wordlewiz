@@ -32,20 +32,16 @@ function getOptions(ws: WorldleState): string[] {
   });
 
   let pattern = "";
-  soln.forEach((s, i) => {
+  soln.forEach((s) => {
     if (typeof s === "string") {
       pattern += s;
       return;
     }
-    let next = "[^";
-    let iter = s.values();
-    let val = iter.next().value;
-    while (val) {
-      next += val;
-      val = iter.next().value;
+    if (s.size === 0) {
+      pattern += "[a-z]";
+      return;
     }
-    next += "]";
-    pattern += next;
+    pattern += `[^${[...s].join("")}]`;
   });
 
   const rx = new RegExp(pattern);
