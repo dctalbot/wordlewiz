@@ -1,2 +1,2 @@
 src/words.json:
-	sort $@ | uniq -i >> $@
+	go run util/rank.go $@
