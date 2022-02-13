@@ -89,3 +89,5 @@ But this is cost prohibitive. I have no cluse what 5000! evaluates to, but it's 
 Instead, the weights of the global letter frequency and the positional letter frequency could be adjusted, and the resulting wordlists could be evaluated in a similar fashion.
 
 Unfortunately, I don't feel like doing that, and it seems like the 50/50 weight does a decent job as-is.
+
+Additionally, after each guess, the word list could be re-ranked based on any new constraints. This would also be a lot of work, but it would surely decrease the average guess count.
