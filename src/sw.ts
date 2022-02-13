@@ -2,64 +2,79 @@ import words from "./words.json";
 
 const ch = new BroadcastChannel("optionsCh");
 
-// character means correct, set means exclude
-const init: (string | Set<string>)[] = new Array(5).fill(new Set());
-type LetterMap = typeof init;
+function getOptions(ws: WorldleState): string[] {
+  if (!ws) return words;
 
-chrome.storage.onChanged.addListener((store) => {
-  const wordleState: WorldleState = store.wordleState?.newValue;
-  const options = filter(words, update(init, wordleState));
-  ch.postMessage({ options });
-});
+  // char means correct, set means exclude
+  const soln = new Array<string | Set<string>>(5).fill(new Set());
+  const includes = new Set<string>();
+  const excludes = new Set<string>();
 
-function update(letters: LetterMap, w: WorldleState) {
-  if (w === undefined) return letters;
-  if (w.rowIndex === 0) return letters;
-
-  letters.forEach((val, i) => {
-    if (typeof i === "string") return;
-
-    let eIndex = 5;
-
-    while (eIndex >= 0) {
-      const row = w.evaluations[eIndex];
-
-      if (row === null) {
-        eIndex--;
-        continue;
+  ws.evaluations.forEach((e, ei) => {
+    if (!e) return;
+    e.forEach((term, ti) => {
+      const char = ws.boardState[ei][ti];
+      switch (term) {
+        case "correct":
+          soln[ti] = char;
+          break;
+        case "present":
+          includes.add(char);
+          if (typeof soln[ti] !== "string") {
+            soln[ti] = new Set([...soln[ti], char]);
+          }
+          break;
+        case "absent":
+          excludes.add(char);
+          break;
       }
-
-      if (row[i] === "correct") {
-        letters[i] = w.boardState[eIndex][i];
-        break;
-      }
-
-      letters[i] = (letters[i] as Set<string>).add(w.boardState[eIndex][i]);
-      eIndex--;
-    }
+    });
   });
 
-  return letters;
+  let pattern = "";
+  soln.forEach((s, i) => {
+    if (typeof s === "string") {
+      pattern += s;
+      return;
+    }
+    let next = "[^";
+    let iter = s.values();
+    let val = iter.next().value;
+    while (val) {
+      next += val;
+      val = iter.next().value;
+    }
+    next += "]";
+    pattern += next;
+  });
+
+  const rx = new RegExp(pattern);
+
+  return words.filter((w) => {
+    let iter = includes.values();
+    let val = iter.next().value;
+    while (val) {
+      if (!w.includes(val)) return false;
+      val = iter.next().value;
+    }
+    iter = excludes.values();
+    val = iter.next().value;
+    while (val) {
+      if (w.includes(val)) return false;
+      val = iter.next().value;
+    }
+    return rx.test(w);
+  });
 }
 
-function filter(words: string[], letters: LetterMap) {
-  const restring = letters.reduce<string>((res, l) => {
-    if (typeof l === "string") {
-      return res + l;
-    }
-    if (l.size === 0) {
-      return res + "\\w";
-    }
-    const iter = l.values();
-    let x = "[^"; // exclude
-    while (!x.endsWith("]")) {
-      const val = iter.next().value;
-      x += val ? val : "]";
-    }
-    return res + x;
-  }, "");
+chrome.storage.onChanged.addListener((store) => {
+  const state: WorldleState = store.wordleState?.newValue;
 
-  const rx = new RegExp(restring);
+  // new game
+  if (!state || state.rowIndex == 0) {
+    ch.postMessage({ options: words });
+    return;
+  }
 
-  return words.filter((w) => rx.test(w));
-}
+  ch.postMessage({ options: getOptions(state) });
+});
