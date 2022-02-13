@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -48,6 +49,7 @@ func (t *Tree) Print(acc *[]string) {
 		t.left.Print(acc)
 	}
 	*acc = append(*acc, t.word)
+	fmt.Println(t.rank)
 	if !t.right.IsZero() {
 		t.right.Print(acc)
 	}
@@ -69,10 +71,18 @@ func main() {
 		log.Fatal("no words to rank")
 	}
 
+	// freq is a global letter frequency map
 	freq := make(map[rune]int, 26)
+
+	// pos is a position-aware letter frequency that acts as a weight
+	pos := make(map[int]map[rune]int, 5)
+	for i := 0; i < 5; i++ {
+		pos[i] = make(map[rune]int, 26)
+	}
 	for _, word := range words {
-		for _, char := range word {
+		for i, char := range word {
 			freq[char]++
+			pos[i][char]++
 		}
 	}
 
@@ -82,7 +92,7 @@ func main() {
 			if strings.Contains(w[:i], string(r)) {
 				continue
 			}
-			result += freq[r]
+			result += (freq[r] * pos[i][r] / len(words))
 		}
 
 		return result
