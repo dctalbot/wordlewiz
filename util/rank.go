@@ -10,7 +10,7 @@ import (
 
 type Tree struct {
 	word        string
-	rank        int
+	rank        float32
 	left, right *Tree
 }
 
@@ -86,13 +86,13 @@ func main() {
 		}
 	}
 
-	getRank := func(w string) (result int) {
+	getRank := func(w string) (result float32) {
 
 		for i, r := range w {
 			if strings.Contains(w[:i], string(r)) {
 				continue
 			}
-			result += (freq[r] * pos[i][r] / len(words))
+			result += (float32(freq[r]*pos[i][r]) / float32(len(words)))
 		}
 
 		return result
