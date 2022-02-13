@@ -9,4 +9,4 @@ setInterval(() => {
   );
   wordleState.tick = Date.now();
   chrome.storage.local.set({ wordleState });
-}, 5000);
+}, 1000);

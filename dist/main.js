@@ -5,5 +5,5 @@
     const wordleState = JSON.parse(localStorage.getItem("nyt-wordle-state") || "");
     wordleState.tick = Date.now();
     chrome.storage.local.set({ wordleState });
-  }, 5e3);
+  }, 1e3);
 })();
