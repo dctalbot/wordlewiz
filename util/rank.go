@@ -74,7 +74,7 @@ func main() {
 	// freq is a global letter frequency map
 	freq := make(map[rune]int, 26)
 
-	// pos is a position-aware letter frequency that acts as a weight
+	// pos does position-aware letter frequency
 	pos := make(map[int]map[rune]int, 5)
 	for i := 0; i < 5; i++ {
 		pos[i] = make(map[rune]int, 26)
@@ -87,14 +87,13 @@ func main() {
 	}
 
 	getRank := func(w string) (result int) {
-
-		for i, r := range w {
-			if strings.Contains(w[:i], string(r)) {
-				continue
+		for i, char := range w {
+			result = pos[i][char]
+			// skip words with same letter more than once
+			if !strings.Contains(w[:i], string(char)) {
+				result += freq[char]
 			}
-			result += (freq[r] * pos[i][r])
 		}
-
 		return result
 	}
 
