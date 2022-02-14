@@ -91,3 +91,18 @@ Instead, the weights of the global letter frequency and the positional letter fr
 Unfortunately, I don't feel like doing that, and it seems like the 50/50 weight does a decent job as-is.
 
 Additionally, after each guess, the word list could be re-ranked based on any new constraints (currently, non-viable words are just filtered out of the original list ranking). This would also be a lot of work, but it would surely decrease the average guess count.
+
+# How to install
+
+1. Clone this repo
+1. Go to [chrome://extensions/](chrome://extensions/)
+1. Enable developer mode
+1. Click "load unpacked" and select the dist/ folder of this repo
+
+# How to develop
+
+```
+make src/words.json
+npm install
+npm run dev
+```
